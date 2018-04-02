@@ -5,7 +5,7 @@ headers = {'User-Agent': 'http-client'}
 
 conn = http.client.HTTPSConnection("api.fda.gov")
 conn.request("GET", "/drug/label.json?search=active_ingredient:acetylsalicylic&limit=10", None, headers)
-
+#Cambiamos la URL para que busque el principio activo de la aspirina
 r1 = conn.getresponse()
 
 print(r1.status, r1.reason)
