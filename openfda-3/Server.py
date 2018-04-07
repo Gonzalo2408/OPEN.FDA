@@ -32,7 +32,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         headers = {'User-Agent': 'http-client'}
 
         conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", "/drug/label.json?limit=11", None, headers)
+        conn.request("GET", "/drug/label.json?limit=10", None, headers)
 
         r1 = conn.getresponse()
         drugs_raw = r1.read().decode("utf-8")
@@ -41,15 +41,23 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         info = json.loads(drugs_raw)
         data = []  # Creamos una lista vacía que vaya agregando cada medicamento
 
+
         for i in info['results']:  # Iteramos sobre las variables que tiene la página
             if i['openfda']:
-                nombre = i['openfda']['brand_name'][0]
-                data.append(nombre)  # Cuando la iteración detecte un 'brand_name', ese brand_name se incorpora a la lista data
+                nombre = i['openfda']['brand_name'][0]  #Cuando la iteración detecte un 'brand_name', ese brand_name se incorpora a la lista data
+                data.append(nombre)
+            else:
+                data.append('"Este medicamento no esta disponible"')  #Si ese brand_name no existe o esta vacío, nos dirá que no esta disponible
 
-        with open('medicamentos.html','w') as f:
-            mensaje = """<html><head>Nombres de medicamentos:</head><body>"""
-            mensaje += "<p>{}</p>".format(data)
-            mensaje += "</body></html>"  # Escribimos el mensaje que queremos que nos envíe la html
+        with open('medicamentos.html','w') as f: #Creamos el html y se nos guardará en la misma carpeta del servidor
+            # Escribimos el mensaje que queremos que nos envíe la html
+            mensaje = """<html><head> Los nombres de los medicamentos son:</head><body>"""
+            mensaje += "<body style='background-color: yellow'>"
+            for i in data:
+                mensaje += "<li type='disc'>"+i+"</li>"
+            mensaje += '<a href="https://api.fda.gov/drug/label.json?limit=10"> Pincha aqui para ver todos los datos de los medicamentos '
+            mensaje += "<img src='http://www.openbiomedical.org/wordpress/wp-content/uploads/2015/09/openfda_logo.jpg?x10565.png'width=20% height=30%' align='middle'"
+            mensaje += '</body></html>'
 
             f.write(mensaje)
             f.close()

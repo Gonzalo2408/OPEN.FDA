@@ -12,7 +12,7 @@ conn.close()
 
 info = json.loads(drugs_raw)
 
-medicamento = info['results'][0]  #Finalmente, obtenemos algunas de las características del medicamento
+medicamento = info['results'][0]
 print("Id del medicamento: ", medicamento['id'])
 print("Uso del medicamento: ", medicamento['purpose'][0])
 print("Fabricado por: ", medicamento['openfda']['manufacturer_name'])
