@@ -313,21 +313,20 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         elif 'redirect' in self.path:  # Si aparece el error 302, nos devuelve a la pagina principal
-            self.send_response(200)
-            self.send_error(302)
+            self.send_response(302)
             self.send_header('Location', 'http://localhost:'+str(PORT))
             self.end_headers()
 
-        elif 'secret' in self.path:  # Si aparece el error 401, te pide informacion apra acceder a sitios privados
-            self.send_error(401)
+        elif 'secret' in self.path:  # Si aparece el error 401, te pide un inicio de sesion para acceder a sitios privados
+            self.send_response(401)
             self.send_header('WWW-Authenticate', 'Basic realm="Mi servidor"')
             self.end_headers()
 
         else:  # Si se introduce mal un parametro, nos salta el error 404
-            self.send_error(404)
+            self.send_response(404)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
-            self.wfile.write("'{}'".format(self.path).encode())
+            self.wfile.write("No encontramos el recurso '{}'".format(self.path).encode())
         return
 
 
